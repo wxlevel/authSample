@@ -1,0 +1,93 @@
+﻿@using mvcCookieAuthSample.ViewModels;
+@model ConsentViewModel;
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Consent page</h2>
+
+<div class="row page-header">
+    <div class="col-sm-10">
+        @if (!string.IsNullOrWhiteSpace(Model.ClientLogoUrl))
+        {
+            <div> <img src="@Model.ClientLogoUrl" style="height:100px" /></div>
+        }
+
+        <h1>
+            @Model.ClientName
+            <small>希望使用你的账户</small>
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-8">
+        <form asp-action="Index" method="post">
+            <input type="hidden" asp-for="ReturnUrl" /> @*表单的隐藏域里包含了returnUrl,当提交表单时，被返回到后台*@
+
+
+            @if (!ViewContext.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    <strong>Error:</strong>
+                    <div asp-validation-summary="All" class="danger"></div>
+                </div>
+            }
+
+            @if (Model.IdentityScopes.Any())
+            {
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span class="glyphicon glyphicon-user"></span>
+                        用户信息
+                    </div>
+                    <ul class="list-group">
+                        @foreach (var scope in Model.IdentityScopes)
+                        {
+                            @Html.Partial("_ScopeListItem", scope)
+                        }
+                    </ul>
+                </div>
+
+            }
+
+            @if (Model.ApiResourceScopes.Any())
+            {
+                <div class="panel">
+                    <div class="panel-heading">
+                        <span class="glyphicon glyphicon-tasks"></span>
+                        应用权限
+                    </div>
+                    <ul class="list-group">
+                        @foreach (var scope in Model.ApiResourceScopes)
+                        {
+                            @Html.Partial("_ScopeListItem", scope)
+                        }
+                    </ul>
+                </div>
+
+            }
+
+            <div>
+                <label>
+                    <input type="checkbox" asp-for="RememberConsent" />
+                    <strong>记住我的选择</strong>
+                </label>
+            </div>
+
+            <div>
+                <button name="button" value="yes" class="btn btn-primary">同意</button> @*不能设置type为button,否则form表单不能提交了*@
+                <button name="button" value="no" class="btn btn-default">取消</button>
+                @if (!string.IsNullOrEmpty(Model.ClientUrl))
+                {
+                    <a>
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        <strong>@Model.ClientUrl</strong>
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+</div>

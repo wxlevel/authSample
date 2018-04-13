@@ -1,0 +1,24 @@
+﻿@using mvcCookieAuthSample.ViewModels;
+@model ScopeViewModel;
+
+<li>
+    <label>
+        <input type="checkbox" name="ScopesConsented" id="scopes_@Model.Name" value="@Model.Name" checked="@Model.Checked" disabled="@Model.Required" />
+        @if (Model.Required)
+        {  /* 如果上面的checkbox被disabled，那么它的值没有被传过去，所以我们强制把它的值放在隐藏域中。*/
+            <input type="hidden" name="ScopesConsented" value="@Model.Name" />
+        }
+
+        <strong>@Model.Name</strong>
+        @if (Model.Emphasize)
+        {
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+        }
+    </label>
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <div>
+            <label for="scopes_@Model.Name">@Model.Description</label>
+        </div>
+    }
+</li>
